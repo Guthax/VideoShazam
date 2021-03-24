@@ -66,7 +66,7 @@ def localizeVideo(video, output):
     #generating and binarizing average optical flow image
     image = np.average(optical_flow, 0)
     av = np.average(image)
-    image = np.array([[255 if x>av*1.3 else 0 for x in line] for line in image])
+    image = np.array([[255 if x>av else 0 for x in line] for line in image])
     image = np.ascontiguousarray(image, dtype=np.uint8)
     image = cv2.erode(image, cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5)))
     image = cv2.erode(image, cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5)))
