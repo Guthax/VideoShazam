@@ -160,8 +160,8 @@ def stabilizeVideo(video, output):
       if(frame_out.shape[1] > 1920): 
         frame_out = cv2.resize(frame_out, (frame_out.shape[1]/2, frame_out.shape[0]/2));
       
-      cv2.imshow("Before and After", frame_out)
-      cv2.waitKey(10)
+      #cv2.imshow("Before and After", frame_out)
+      #cv2.waitKey(10)
       out.write(frame_stabilized)
 
     # Release video

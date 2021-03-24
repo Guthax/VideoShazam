@@ -114,14 +114,14 @@ def localizeVideo(video, output):
         sucess, rawFrame = cap2.read()
         if sucess:
             croppedFrame = crop(rawFrame, topLeft, bottomRight)
-            cv2.imshow("cropped", croppedFrame)
-            cv2.waitKey(1)
+            #cv2.imshow("cropped", croppedFrame)
+            #cv2.waitKey(1)
             out.write(croppedFrame)
 
     image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
     image = cv2.drawContours(image, [bigBox], -1, (0, 0, 255), 5)
-    cv2.imshow("avg flow", image)
-    cv2.waitKey(0)
+    #cv2.imshow("avg flow", image)
+    #cv2.waitKey(0)
     out.release()
     cv2.destroyAllWindows()
 
