@@ -94,8 +94,8 @@ def stabilizeVideo(video, output):
       curr_pts = curr_pts[idx]
 
       #Find transformation matrix
-      m = cv2.estimateRigidTransform(prev_pts, curr_pts, fullAffine=False) #will only work with OpenCV-3 or less
-       
+      m, inliers = cv2.estimateAffinePartial2D(prev_pts, curr_pts)
+     
       # Extract traslation
       dx = m[0,2]
       dy = m[1,2]
