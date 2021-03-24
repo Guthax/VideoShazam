@@ -12,7 +12,8 @@ import os
 from fractions import gcd
 import matplotlib.pyplot as plt
 from video_features import *
-  
+from stabilize import stabilizeVideo
+from localize import localizeVideo
 
 def normalize_histogram(res1, hist1, res2, hist2):
     denom = gcd(res1, res2)
@@ -42,8 +43,10 @@ if not args.f in features:
     print "Requested feature '"+args.f+"' is not a valid feature. Please use one of the following features:"
     print features
     
+stabilizeVideo(args.query, "stabilized.avi")
+localizeVideo("stabilized.avi", "cropped.avi")
 
-cap = cv2.VideoCapture(args.query)
+cap = cv2.VideoCapture("cropped.avi")
 frame_count = get_frame_count(args.query) + 1
 frame_rate = get_frame_rate(args.query )
 q_duration = float(args.e) - float(args.s)
@@ -157,6 +160,7 @@ def euclidean_norm(x,y):
 bestscore = sys.maxint
 bestvideo = None
 score = sys.maxint
+processed_videos = []
 for video in video_list:
     print video
     if get_duration(video) < q_duration:
@@ -200,8 +204,11 @@ for video in video_list:
     if(score < bestscore):
         bestscore = score
         bestvideo = video
+    processed_videos.append([video, score, average])
     print 'Best match at:', frame/frame_rate, 'seconds, with score of:', score, 'and an average of', average
     print ''
 print 'best video match: ', bestvideo
-
+processed_videos = np.array(processed_videos)
+processed_videos[processed_videos[:,1].argsort()]
+print(processed_videos)
  
