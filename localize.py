@@ -19,7 +19,14 @@ def correctAspectRatio(box):
 def crop(frame, topLeft, bottomRight):
     return frame[topLeft[1]:bottomRight[1], topLeft[0]:bottomRight[0]]
     
+def findCorners(box):
+    sortedList = sorted(box, key=lambda point: point[1])
+    tops = sorted(sortedList[:2], key=lambda point: point[0])
+    topLeft = tops[0]
+    bottoms = sorted(sortedList[2:4], key=lambda point: point[0])
+    bottomRight = bottoms[1] 
 
+    return topLeft, bottomRight
 def localizeVideo(video, output):
     # Read input video
     cap = cv2.VideoCapture(video)
@@ -94,8 +101,7 @@ def localizeVideo(video, output):
         i = i+1        
         
     bigBox = correctAspectRatio(bboxes[boxIndex])
-    topLeft = bigBox[2]
-    bottomRight = bigBox[0]
+    topLeft, bottomRight = findCorners(bigBox)
 
     sucess, rawFrame = cap2.read()
     croppedFrame = crop(rawFrame, topLeft, bottomRight)
