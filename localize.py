@@ -8,9 +8,7 @@ from scipy.io import wavfile
 
 def correctAspectRatio(box):
     width = (abs(box[0][0] - box[1][0]) + abs(box[3][0] - box[2][0]))/2
-    print(width)
     height = int(round(width*0.5625))
-    print(height)
     res = box
     res[0][1] = box[3][1] + height
     res[1][1] = box[2][1] + height
@@ -19,12 +17,20 @@ def correctAspectRatio(box):
 def crop(frame, topLeft, bottomRight):
     return frame[topLeft[1]:bottomRight[1], topLeft[0]:bottomRight[0]]
     
-def findCorners(box):
+def findCorners(box, w, h):
     sortedList = sorted(box, key=lambda point: point[1])
     tops = sorted(sortedList[:2], key=lambda point: point[0])
     topLeft = tops[0]
     bottoms = sorted(sortedList[2:4], key=lambda point: point[0])
-    bottomRight = bottoms[1] 
+    bottomRight = bottoms[1]
+
+    #correcting for values outside range
+    topLeft[0] = max(0, topLeft[0])
+    topLeft[1] = max(0, topLeft[1]) 
+    bottomRight[0] = min(h, bottomRight[0])
+    bottomRight[1] = min(w, bottomRight[1])
+
+    return topLeft, bottomRight
 
     return topLeft, bottomRight
 def localizeVideo(video, output):
@@ -50,7 +56,6 @@ def localizeVideo(video, output):
     # Read first frame
     _, prev = cap.read()
 
-    print(prev)
     # Convert frame to grayscale
     prev_gray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
     prev_gray = cv2.GaussianBlur(prev_gray,(5,5),0)
@@ -101,7 +106,7 @@ def localizeVideo(video, output):
         i = i+1        
         
     bigBox = correctAspectRatio(bboxes[boxIndex])
-    topLeft, bottomRight = findCorners(bigBox)
+    topLeft, bottomRight = findCorners(bigBox, w, h)
 
     sucess, rawFrame = cap2.read()
     croppedFrame = crop(rawFrame, topLeft, bottomRight)
@@ -109,9 +114,6 @@ def localizeVideo(video, output):
     fshape = croppedFrame.shape
     fheight = fshape[0]
     fwidth = fshape[1]
-
-    print(fheight)
-    print(fwidth)
 
     out = cv2.VideoWriter(output, fourcc, fps, (fwidth, fheight))
     out.write(croppedFrame)
