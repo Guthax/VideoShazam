@@ -6,12 +6,25 @@ from scipy.io import wavfile
  
 
 
-def correctAspectRatio(box):
-    width = (abs(box[0][0] - box[1][0]) + abs(box[3][0] - box[2][0]))/2
-    height = int(round(width*0.5625))
+def correctAspectRatio(box):        
+    sortedList = sorted(box, key=lambda point: point[1])
+    tops = sorted(sortedList[:2], key=lambda point: point[0])
+    topLeft = tops[0]
+    topRight = tops[1]
+    bottoms = sorted(sortedList[2:4], key=lambda point: point[0])
+    bottomLeft = bottoms[0]
+    bottomRight = bottoms[1]
     res = box
-    res[0][1] = box[3][1] + height
-    res[1][1] = box[2][1] + height
+    res[0] = topLeft
+    res[1] = topRight
+    res[2] = bottomLeft
+    res[3] = bottomRight
+          
+    width = (abs(res[0][0] - res[1][0]) + abs(res[3][0] - res[2][0]))/2
+    height = int(round(width*0.5625))
+    res[0][1] = res[3][1] + height
+    res[1][1] = res[2][1] + height
+
     return res
 
 def crop(frame, topLeft, bottomRight):
@@ -27,8 +40,6 @@ def findCorners(box, w, h):
     #correcting for values outside range
     topLeft[0] = max(0, topLeft[0])
     topLeft[1] = max(0, topLeft[1]) 
-    bottomRight[0] = min(h, bottomRight[0])
-    bottomRight[1] = min(w, bottomRight[1])
 
     return topLeft, bottomRight
 
