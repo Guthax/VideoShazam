@@ -32,8 +32,9 @@ def findCorners(box, w, h):
 
     return topLeft, bottomRight
 
-    return topLeft, bottomRight
 def localizeVideo(video, output):
+    print("localizing...")
+  
     # Read input video
     cap = cv2.VideoCapture(video)
     cap2 = cv2.VideoCapture(video)  
