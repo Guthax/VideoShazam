@@ -34,6 +34,8 @@ def fixBorder(frame):
   return frame
 
 def stabilizeVideo(video, output):
+    print("stabilizing video")
+    
     # The larger the more stable the video, but less reactive to sudden panning
     smoothingRadius=50 
 
@@ -59,7 +61,6 @@ def stabilizeVideo(video, output):
     # Read first frame
     _, prev = cap.read() 
      
-    print(prev)
     # Convert frame to grayscale
     prev_gray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY) 
 
@@ -109,7 +110,6 @@ def stabilizeVideo(video, output):
       # Move to next frame
       prev_gray = curr_gray
 
-      print("Frame: " + str(i) +  "/" + str(n_frames) + " -  Tracked points : " + str(len(prev_pts)))
 
     # Compute trajectory using cumulative sum of transformations
     trajectory = np.cumsum(transforms, axis=0) 
